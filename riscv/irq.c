@@ -135,6 +135,9 @@ void riscv__generate_irq_prop(void *fdt, u8 irq, enum irq_type irq_type)
 
 void riscv__irqchip_create(struct kvm *kvm)
 {
+	/* Try AIA in-kernel irqchip. */
+	aia__create(kvm);
+
 	/* Try PLIC irqchip */
 	plic__create(kvm);
 

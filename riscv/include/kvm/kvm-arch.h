@@ -97,6 +97,8 @@ extern u32 riscv_irqchip_msi_phandle;
 extern bool riscv_irqchip_line_sensing;
 extern bool riscv_irqchip_irqfd_ready;
 
+void aia__create(struct kvm *kvm);
+
 void plic__create(struct kvm *kvm);
 
 void pci__generate_fdt_nodes(void *fdt);
