@@ -37,6 +37,9 @@ static inline __u64 __kvm_reg_id(__u64 type, __u64 idx, __u64  size)
 					     KVM_REG_RISCV_TIMER_REG(name), \
 					     KVM_REG_SIZE_U64)
 
+#define RISCV_SBI_EXT_REG(id)	__kvm_reg_id(KVM_REG_RISCV_SBI_EXT, \
+					     id, KVM_REG_SIZE_ULONG)
+
 struct kvm_cpu {
 	pthread_t	thread;
 
