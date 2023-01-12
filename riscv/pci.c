@@ -116,8 +116,7 @@ void pci__generate_fdt_nodes(void *fdt)
 
 	/* Set MSI parent if available */
 	if (riscv_irqchip_msi_phandle != PHANDLE_RESERVED)
-		_FDT(fdt_property_cell(fdt, "msi-parent",
-				cpu_to_fdt32(riscv_irqchip_msi_phandle)));
+		_FDT(fdt_property_cell(fdt, "msi-parent", riscv_irqchip_msi_phandle));
 
 	_FDT(fdt_end_node(fdt));
 }
