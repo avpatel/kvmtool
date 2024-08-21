@@ -49,6 +49,7 @@ struct isa_ext_info isa_info_arr[] = {
 	{"zihintntl", KVM_RISCV_ISA_EXT_ZIHINTNTL},
 	{"zihintpause", KVM_RISCV_ISA_EXT_ZIHINTPAUSE},
 	{"zihpm", KVM_RISCV_ISA_EXT_ZIHPM},
+	{"zimop", KVM_RISCV_ISA_EXT_ZIMOP},
 	{"zknd", KVM_RISCV_ISA_EXT_ZKND},
 	{"zkne", KVM_RISCV_ISA_EXT_ZKNE},
 	{"zknh", KVM_RISCV_ISA_EXT_ZKNH},
