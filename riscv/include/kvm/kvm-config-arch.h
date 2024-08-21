@@ -82,6 +82,9 @@ struct kvm_config_arch {
 	OPT_BOOLEAN('\0', "disable-zcd",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZCD],	\
 		    "Disable Zcd Extension"),				\
+	OPT_BOOLEAN('\0', "disable-zcf",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZCF],	\
+		    "Disable Zcf Extension"),				\
 	OPT_BOOLEAN('\0', "disable-zfa",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZFA],	\
 		    "Disable Zfa Extension"),				\
