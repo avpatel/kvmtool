@@ -157,7 +157,7 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 					   isa_info_arr[i].name);
 				break;
 			}
-			pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN, "_%s",
+			pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN - pos, "_%s",
 					isa_info_arr[i].name);
 		}
 		cpu_isa[pos] = '\0';
