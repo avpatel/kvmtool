@@ -8,6 +8,8 @@
 
 #include <kvm/util.h>
 
+static struct arm64_image_header *kernel_header;
+
 int vcpu_affinity_parser(const struct option *opt, const char *arg, int unset)
 {
 	struct kvm *kvm = opt->ptr;
@@ -57,48 +59,80 @@ u64 kvm__arch_default_ram_address(void)
 	return ARM_MEMORY_AREA;
 }
 
+void kvm__arch_read_kernel_header(struct kvm *kvm, int fd)
+{
+	const char *debug_str;
+	off_t cur_offset;
+	ssize_t size;
+
+	if (kvm->cfg.arch.aarch32_guest)
+		return;
+
+	kernel_header = malloc(sizeof(*kernel_header));
+	if (!kernel_header)
+		return;
+
+	cur_offset = lseek(fd, 0, SEEK_CUR);
+	if (cur_offset == (off_t)-1 || lseek(fd, 0, SEEK_SET) == (off_t)-1) {
+		debug_str = "Failed to seek in kernel image file";
+		goto fail;
+	}
+
+	size = xread(fd, kernel_header, sizeof(*kernel_header));
+	if (size < 0 || (size_t)size < sizeof(*kernel_header))
+		die("Failed to read kernel image header");
+
+	lseek(fd, cur_offset, SEEK_SET);
+
+	if (memcmp(&kernel_header->magic, ARM64_IMAGE_MAGIC, sizeof(kernel_header->magic))) {
+		debug_str = "Kernel image magic not matching";
+		kernel_header = NULL;
+		goto fail;
+	}
+
+	return;
+
+fail:
+	pr_debug("%s, using defaults", debug_str);
+}
+
 /*
  * Return the TEXT_OFFSET value that the guest kernel expects. Note
  * that pre-3.17 kernels expose this value using the native endianness
  * instead of Little-Endian. BE kernels of this vintage may fail to
  * boot. See Documentation/arm64/booting.rst in your local kernel tree.
  */
-unsigned long long kvm__arch_get_kern_offset(struct kvm *kvm, int fd)
+unsigned long long kvm__arch_get_kern_offset(struct kvm *kvm)
 {
-	struct arm64_image_header header;
-	off_t cur_offset;
-	ssize_t size;
 	const char *debug_str;
 
 	/* the 32bit kernel offset is a well known value */
 	if (kvm->cfg.arch.aarch32_guest)
 		return 0x8000;
 
-	cur_offset = lseek(fd, 0, SEEK_CUR);
-	if (cur_offset == (off_t)-1 ||
-	    lseek(fd, 0, SEEK_SET) == (off_t)-1) {
-		debug_str = "Failed to seek in kernel image file";
+	if (!kernel_header) {
+		debug_str = "Kernel header is missing";
 		goto default_offset;
 	}
 
-	size = xread(fd, &header, sizeof(header));
-	if (size < 0 || (size_t)size < sizeof(header))
-		die("Failed to read kernel image header");
-
-	lseek(fd, cur_offset, SEEK_SET);
-
-	if (memcmp(&header.magic, ARM64_IMAGE_MAGIC, sizeof(header.magic))) {
-		debug_str = "Kernel image magic not matching";
+	if (!le64_to_cpu(kernel_header->image_size)) {
+		debug_str = "Image size is 0";
 		goto default_offset;
 	}
 
-	if (le64_to_cpu(header.image_size))
-		return le64_to_cpu(header.text_offset);
+	return le64_to_cpu(kernel_header->text_offset);
 
-	debug_str = "Image size is 0";
 default_offset:
 	pr_debug("%s, assuming TEXT_OFFSET to be 0x80000", debug_str);
 	return 0x80000;
+}
+
+u64 kvm__arch_get_kernel_size(struct kvm *kvm)
+{
+	if (kvm->cfg.arch.aarch32_guest || !kernel_header)
+		return 0;
+
+	return le64_to_cpu(kernel_header->image_size);
 }
 
 int kvm__arch_get_ipa_limit(struct kvm *kvm)
@@ -160,3 +194,11 @@ void kvm__arch_enable_mte(struct kvm *kvm)
 
 	pr_debug("MTE capability enabled");
 }
+
+static int kvm__arch_free_kernel_header(struct kvm *kvm)
+{
+	free(kernel_header);
+
+	return 0;
+}
+late_exit(kvm__arch_free_kernel_header);

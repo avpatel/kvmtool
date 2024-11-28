@@ -104,6 +104,7 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 	void *pos, *kernel_end, *limit;
 	unsigned long guest_addr;
 	ssize_t file_size;
+	u64 kernel_size;
 
 	/*
 	 * Linux requires the initrd and dtb to be mapped inside lowmem,
@@ -111,7 +112,9 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 	 */
 	limit = kvm->ram_start + min(kvm->ram_size, (u64)SZ_256M);
 
-	pos = kvm->ram_start + kvm__arch_get_kern_offset(kvm, fd_kernel);
+	kvm__arch_read_kernel_header(kvm, fd_kernel);
+
+	pos = kvm->ram_start + kvm__arch_get_kern_offset(kvm);
 	kvm->arch.kern_guest_start = host_to_guest_flat(kvm, pos);
 	if (!kvm->arch.kern_guest_start)
 		die("guest memory too small to contain the kernel");
@@ -122,9 +125,13 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 
 		die_perror("kernel read");
 	}
-	kernel_end = pos + file_size;
-	pr_debug("Loaded kernel to 0x%llx (%zd bytes)",
-		 kvm->arch.kern_guest_start, file_size);
+
+	kernel_size = kvm__arch_get_kernel_size(kvm);
+	if (!kernel_size || kernel_size < (u64)file_size)
+		kernel_size = file_size;
+	kernel_end = pos + kernel_size;
+	pr_debug("Loaded kernel to 0x%llx (%llu bytes)",
+		 kvm->arch.kern_guest_start, kernel_size);
 
 	/*
 	 * Now load backwards from the end of memory so the kernel
