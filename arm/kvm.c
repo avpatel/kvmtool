@@ -103,14 +103,16 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 {
 	void *pos, *kernel_end, *limit;
 	unsigned long guest_addr;
+	u64 payload_region_size;
 	ssize_t file_size;
 	u64 kernel_size;
 
+	payload_region_size = kvm__arch_get_payload_region_size(kvm);
 	/*
-	 * Linux requires the initrd and dtb to be mapped inside lowmem,
+	 * Linux for arm requires the initrd and dtb to be mapped inside lowmem,
 	 * so we can't just place them at the top of memory.
 	 */
-	limit = kvm->ram_start + min(kvm->ram_size, (u64)SZ_256M);
+	limit = kvm->ram_start + min(kvm->ram_size, payload_region_size);
 
 	kvm__arch_read_kernel_header(kvm, fd_kernel);
 

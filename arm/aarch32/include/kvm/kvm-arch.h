@@ -3,8 +3,9 @@
 
 #include <linux/sizes.h>
 
-#define kvm__arch_get_kern_offset(...)	0x8000
-#define kvm__arch_get_kernel_size(...)	0
+#define kvm__arch_get_kern_offset(...)		0x8000
+#define kvm__arch_get_kernel_size(...)		0
+#define kvm__arch_get_payload_region_size(...)	SZ_256M
 
 struct kvm;
 static inline void kvm__arch_read_kernel_header(struct kvm *kvm, int fd) {}

@@ -135,6 +135,14 @@ u64 kvm__arch_get_kernel_size(struct kvm *kvm)
 	return le64_to_cpu(kernel_header->image_size);
 }
 
+u64 kvm__arch_get_payload_region_size(struct kvm *kvm)
+{
+	if (kvm->cfg.arch.aarch32_guest)
+		return SZ_256M;
+
+	return SZ_512M;
+}
+
 int kvm__arch_get_ipa_limit(struct kvm *kvm)
 {
 	int ret;

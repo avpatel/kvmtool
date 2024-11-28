@@ -8,6 +8,8 @@ void kvm__arch_read_kernel_header(struct kvm *kvm, int fd);
 unsigned long long kvm__arch_get_kern_offset(struct kvm *kvm);
 u64 kvm__arch_get_kernel_size(struct kvm *kvm);
 
+u64 kvm__arch_get_payload_region_size(struct kvm *kvm);
+
 int kvm__arch_get_ipa_limit(struct kvm *kvm);
 void kvm__arch_enable_mte(struct kvm *kvm);
 
