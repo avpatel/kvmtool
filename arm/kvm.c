@@ -109,7 +109,7 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 	 * Linux requires the initrd and dtb to be mapped inside lowmem,
 	 * so we can't just place them at the top of memory.
 	 */
-	limit = kvm->ram_start + min(kvm->ram_size, (u64)SZ_256M) - 1;
+	limit = kvm->ram_start + min(kvm->ram_size, (u64)SZ_256M);
 
 	pos = kvm->ram_start + kvm__arch_get_kern_offset(kvm, fd_kernel);
 	kvm->arch.kern_guest_start = host_to_guest_flat(kvm, pos);
@@ -139,7 +139,7 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 	kvm->arch.dtb_guest_start = guest_addr;
 	pr_debug("Placing fdt at 0x%llx - 0x%llx",
 		 kvm->arch.dtb_guest_start,
-		 host_to_guest_flat(kvm, limit));
+		 host_to_guest_flat(kvm, limit - 1));
 	limit = pos;
 
 	/* ... and finally the initrd, if we have one. */
