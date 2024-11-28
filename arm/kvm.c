@@ -113,6 +113,8 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 
 	pos = kvm->ram_start + kvm__arch_get_kern_offset(kvm, fd_kernel);
 	kvm->arch.kern_guest_start = host_to_guest_flat(kvm, pos);
+	if (!kvm->arch.kern_guest_start)
+		die("guest memory too small to contain the kernel");
 	file_size = read_file(fd_kernel, pos, limit - pos);
 	if (file_size < 0) {
 		if (errno == ENOMEM)
@@ -131,7 +133,10 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 	 */
 	pos = limit;
 	pos -= (FDT_MAX_SIZE + FDT_ALIGN);
-	guest_addr = ALIGN(host_to_guest_flat(kvm, pos), FDT_ALIGN);
+	guest_addr = host_to_guest_flat(kvm, pos);
+	if (!guest_addr)
+		die("fdt too big to contain in guest memory");
+	guest_addr = ALIGN(guest_addr, FDT_ALIGN);
 	pos = guest_flat_to_host(kvm, guest_addr);
 	if (pos < kernel_end)
 		die("fdt overlaps with kernel image.");
@@ -151,7 +156,10 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, int fd_kernel, int fd_initrd,
 			die_perror("fstat");
 
 		pos -= (sb.st_size + INITRD_ALIGN);
-		guest_addr = ALIGN(host_to_guest_flat(kvm, pos), INITRD_ALIGN);
+		guest_addr = host_to_guest_flat(kvm, pos);
+		if (!guest_addr)
+			die("initrd too big to fit in the payload memory region");
+		guest_addr = ALIGN(guest_addr, INITRD_ALIGN);
 		pos = guest_flat_to_host(kvm, guest_addr);
 		if (pos < kernel_end)
 			die("initrd overlaps with kernel image.");
