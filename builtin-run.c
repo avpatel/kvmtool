@@ -108,7 +108,7 @@ static u64 parse_mem_option(const char *nptr, char **next)
 	u64 val;
 
 	errno = 0;
-	val = strtoull(nptr, next, 10);
+	val = strtoull(nptr, next, 0);
 	if (errno == ERANGE)
 		die("Memory too large: %s", nptr);
 	if (*next == nptr)
