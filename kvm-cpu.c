@@ -154,8 +154,6 @@ int kvm_cpu__start(struct kvm_cpu *cpu)
 	signal(SIGKVMPAUSE, kvm_cpu_signal_handler);
 	signal(SIGKVMTASK, kvm_cpu_signal_handler);
 
-	kvm_cpu__reset_vcpu(cpu);
-
 	if (cpu->kvm->cfg.single_step)
 		kvm_cpu__enable_singlestep(cpu);
 
@@ -293,6 +291,7 @@ int kvm_cpu__init(struct kvm *kvm)
 			pr_err("unable to initialize KVM VCPU");
 			goto fail_alloc;
 		}
+		kvm_cpu__reset_vcpu(kvm->cpus[i]);
 	}
 
 	return 0;
