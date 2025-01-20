@@ -1,3 +1,5 @@
+#include "linux/err.h"
+
 #include "kvm/kvm-cpu.h"
 
 #include "kvm/symbol.h"
@@ -303,10 +305,11 @@ fail_alloc:
 }
 base_init(kvm_cpu__init);
 
-int kvm_cpu__exit(struct kvm *kvm)
+int kvm_cpu__exit(struct kvm *kvm, int vcpu0_ret)
 {
-	int i, r;
-	void *ret = NULL;
+	int ret = vcpu0_ret;
+	void *vcpu_ret;
+	int i;
 
 	kvm_cpu__delete(kvm->cpus[0]);
 	kvm->cpus[0] = NULL;
@@ -315,12 +318,12 @@ int kvm_cpu__exit(struct kvm *kvm)
 	for (i = 1; i < kvm->nrcpus; i++) {
 		if (kvm->cpus[i]->is_running) {
 			pthread_kill(kvm->cpus[i]->thread, SIGKVMEXIT);
-			if (pthread_join(kvm->cpus[i]->thread, &ret) != 0)
+			if (pthread_join(kvm->cpus[i]->thread, &vcpu_ret) != 0)
 				die("pthread_join");
 			kvm_cpu__delete(kvm->cpus[i]);
+			if (!ret && PTR_ERR(vcpu_ret))
+				ret = PTR_ERR(vcpu_ret);
 		}
-		if (ret == NULL)
-			r = 0;
 	}
 	kvm__continue(kvm);
 
@@ -330,5 +333,5 @@ int kvm_cpu__exit(struct kvm *kvm)
 
 	close(task_eventfd);
 
-	return r;
+	return ret;
 }

@@ -293,7 +293,7 @@ static void *kvm_cpu_thread(void *arg)
 	if (kvm_cpu__start(current_kvm_cpu))
 		goto panic_kvm;
 
-	return (void *) (intptr_t) 0;
+	return ERR_PTR(0);
 
 panic_kvm:
 	pr_err("KVM exit reason: %u (\"%s\")",
@@ -310,7 +310,7 @@ panic_kvm:
 	kvm_cpu__show_code(current_kvm_cpu);
 	kvm_cpu__show_page_tables(current_kvm_cpu);
 
-	return (void *) (intptr_t) 1;
+	return ERR_PTR(1);
 }
 
 static char kernel[PATH_MAX];
@@ -830,6 +830,7 @@ static struct kvm *kvm_cmd_run_init(int argc, const char **argv)
 
 static int kvm_cmd_run_work(struct kvm *kvm)
 {
+	void *vcpu0_ret;
 	int i;
 
 	for (i = 0; i < kvm->nrcpus; i++) {
@@ -838,10 +839,10 @@ static int kvm_cmd_run_work(struct kvm *kvm)
 	}
 
 	/* Only VCPU #0 is going to exit by itself when shutting down */
-	if (pthread_join(kvm->cpus[0]->thread, NULL) != 0)
+	if (pthread_join(kvm->cpus[0]->thread, &vcpu0_ret) != 0)
 		die("unable to join with vcpu 0");
 
-	return kvm_cpu__exit(kvm);
+	return kvm_cpu__exit(kvm, PTR_ERR(vcpu0_ret));
 }
 
 static void kvm_cmd_run_exit(struct kvm *kvm, int guest_ret)

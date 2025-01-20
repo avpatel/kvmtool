@@ -10,7 +10,7 @@ struct kvm_cpu_task {
 };
 
 int kvm_cpu__init(struct kvm *kvm);
-int kvm_cpu__exit(struct kvm *kvm);
+int kvm_cpu__exit(struct kvm *kvm, int vcpu0_ret);
 struct kvm_cpu *kvm_cpu__arch_init(struct kvm *kvm, unsigned long cpu_id);
 void kvm_cpu__delete(struct kvm_cpu *vcpu);
 void kvm_cpu__reset_vcpu(struct kvm_cpu *vcpu);
