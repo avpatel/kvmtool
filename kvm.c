@@ -354,7 +354,7 @@ void *guest_flat_to_host(struct kvm *kvm, u64 offset)
 			return bank->host_addr + (offset - bank_start);
 	}
 
-	pr_warning("unable to translate guest address 0x%llx to host",
+	pr_debug("unable to translate guest address 0x%llx to host",
 			(unsigned long long)offset);
 	return NULL;
 }
@@ -371,7 +371,7 @@ u64 host_to_guest_flat(struct kvm *kvm, void *ptr)
 			return bank->guest_phys_addr + (ptr - bank_start);
 	}
 
-	pr_warning("unable to translate host address %p to guest", ptr);
+	pr_debug("unable to translate host address %p to guest", ptr);
 	return 0;
 }
 
