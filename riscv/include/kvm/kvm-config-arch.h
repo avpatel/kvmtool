@@ -37,6 +37,9 @@ struct kvm_config_arch {
 	OPT_BOOLEAN('\0', "disable-sscofpmf",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SSCOFPMF],	\
 		    "Disable Sscofpmf Extension"),			\
+	OPT_BOOLEAN('\0', "disable-ssnpm",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SSNPM],	\
+		    "Disable Ssnpm Extension"),				\
 	OPT_BOOLEAN('\0', "disable-sstc",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SSTC],	\
 		    "Disable Sstc Extension"),				\
