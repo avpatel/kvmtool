@@ -25,6 +25,9 @@ struct kvm_config_arch {
 	OPT_U64('\0', "custom-mimpid",					\
 		&(cfg)->custom_mimpid,					\
 		"Show custom mimpid to Guest VCPU"),			\
+	OPT_BOOLEAN('\0', "disable-smnpm",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SMNPM],	\
+		    "Disable Smnpm Extension"),				\
 	OPT_BOOLEAN('\0', "disable-smstateen",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SMSTATEEN],	\
 		    "Disable Smstateen Extension"),			\
