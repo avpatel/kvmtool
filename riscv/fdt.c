@@ -21,6 +21,7 @@ struct isa_ext_info isa_info_arr[] = {
 	{"sscofpmf", KVM_RISCV_ISA_EXT_SSCOFPMF},
 	{"sstc", KVM_RISCV_ISA_EXT_SSTC},
 	{"svade", KVM_RISCV_ISA_EXT_SVADE},
+	{"svadu", KVM_RISCV_ISA_EXT_SVADU},
 	{"svinval", KVM_RISCV_ISA_EXT_SVINVAL},
 	{"svnapot", KVM_RISCV_ISA_EXT_SVNAPOT},
 	{"svpbmt", KVM_RISCV_ISA_EXT_SVPBMT},
