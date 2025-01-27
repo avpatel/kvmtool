@@ -8,6 +8,9 @@
 #define round_down(x, y)	((x) & ~__round_mask(x, y))
 
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
+#ifndef __KERNEL_DIV_ROUND_UP
+#define __KERNEL_DIV_ROUND_UP(n,d)	DIV_ROUND_UP(n,d)
+#endif
 
 #define ALIGN(x,a)		__ALIGN_MASK(x,(typeof(x))(a)-1)
 #define __ALIGN_MASK(x,mask)	(((x)+(mask))&~(mask))
