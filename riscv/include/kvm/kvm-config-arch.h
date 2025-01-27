@@ -40,6 +40,9 @@ struct kvm_config_arch {
 	OPT_BOOLEAN('\0', "disable-svade",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SVADE],	\
 		    "Disable Svade Extension"),				\
+	OPT_BOOLEAN('\0', "disable-svadu",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SVADU],	\
+		    "Disable Svadu Extension"),				\
 	OPT_BOOLEAN('\0', "disable-svinval",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_SVINVAL],	\
 		    "Disable Svinval Extension"),			\
