@@ -13,81 +13,133 @@ struct isa_ext_info {
 	const char *name;
 	unsigned long ext_id;
 	bool multi_letter;
+	bool min_cpu_included;
 };
 
 struct isa_ext_info isa_info_arr[] = {
-	/* single-letter */
-	{"a", KVM_RISCV_ISA_EXT_A, false},
-	{"c", KVM_RISCV_ISA_EXT_C, false},
-	{"d", KVM_RISCV_ISA_EXT_D, false},
-	{"f", KVM_RISCV_ISA_EXT_F, false},
-	{"h", KVM_RISCV_ISA_EXT_H, false},
-	{"i", KVM_RISCV_ISA_EXT_I, false},
-	{"m", KVM_RISCV_ISA_EXT_M, false},
-	{"v", KVM_RISCV_ISA_EXT_V, false},
+	/* single-letter ordered canonically as "IEMAFDQCLBJTPVNSUHKORWXYZG" */
+	{"i",		KVM_RISCV_ISA_EXT_I,		false, true},
+	{"m",		KVM_RISCV_ISA_EXT_M,		false, true},
+	{"a",		KVM_RISCV_ISA_EXT_A,		false, true},
+	{"f",		KVM_RISCV_ISA_EXT_F,		false, true},
+	{"d",		KVM_RISCV_ISA_EXT_D,		false, true},
+	{"c",		KVM_RISCV_ISA_EXT_C,		false, true},
+	{"v",		KVM_RISCV_ISA_EXT_V,		false, false},
+	{"h",		KVM_RISCV_ISA_EXT_H,		false, false},
 	/* multi-letter sorted alphabetically */
-	{"smnpm", KVM_RISCV_ISA_EXT_SMNPM, true},
-	{"smstateen", KVM_RISCV_ISA_EXT_SMSTATEEN, true},
-	{"ssaia", KVM_RISCV_ISA_EXT_SSAIA, true},
-	{"sscofpmf", KVM_RISCV_ISA_EXT_SSCOFPMF, true},
-	{"ssnpm", KVM_RISCV_ISA_EXT_SSNPM, true},
-	{"sstc", KVM_RISCV_ISA_EXT_SSTC, true},
-	{"svade", KVM_RISCV_ISA_EXT_SVADE, true},
-	{"svadu", KVM_RISCV_ISA_EXT_SVADU, true},
-	{"svinval", KVM_RISCV_ISA_EXT_SVINVAL, true},
-	{"svnapot", KVM_RISCV_ISA_EXT_SVNAPOT, true},
-	{"svpbmt", KVM_RISCV_ISA_EXT_SVPBMT, true},
-	{"svvptc", KVM_RISCV_ISA_EXT_SVVPTC, true},
-	{"zabha", KVM_RISCV_ISA_EXT_ZABHA, true},
-	{"zacas", KVM_RISCV_ISA_EXT_ZACAS, true},
-	{"zawrs", KVM_RISCV_ISA_EXT_ZAWRS, true},
-	{"zba", KVM_RISCV_ISA_EXT_ZBA, true},
-	{"zbb", KVM_RISCV_ISA_EXT_ZBB, true},
-	{"zbc", KVM_RISCV_ISA_EXT_ZBC, true},
-	{"zbkb", KVM_RISCV_ISA_EXT_ZBKB, true},
-	{"zbkc", KVM_RISCV_ISA_EXT_ZBKC, true},
-	{"zbkx", KVM_RISCV_ISA_EXT_ZBKX, true},
-	{"zbs", KVM_RISCV_ISA_EXT_ZBS, true},
-	{"zca", KVM_RISCV_ISA_EXT_ZCA, true},
-	{"zcb", KVM_RISCV_ISA_EXT_ZCB, true},
-	{"zcd", KVM_RISCV_ISA_EXT_ZCD, true},
-	{"zcf", KVM_RISCV_ISA_EXT_ZCF, true},
-	{"zcmop", KVM_RISCV_ISA_EXT_ZCMOP, true},
-	{"zfa", KVM_RISCV_ISA_EXT_ZFA, true},
-	{"zfh", KVM_RISCV_ISA_EXT_ZFH, true},
-	{"zfhmin", KVM_RISCV_ISA_EXT_ZFHMIN, true},
-	{"zicbom", KVM_RISCV_ISA_EXT_ZICBOM, true},
-	{"zicboz", KVM_RISCV_ISA_EXT_ZICBOZ, true},
-	{"ziccrse", KVM_RISCV_ISA_EXT_ZICCRSE, true},
-	{"zicntr", KVM_RISCV_ISA_EXT_ZICNTR, true},
-	{"zicond", KVM_RISCV_ISA_EXT_ZICOND, true},
-	{"zicsr", KVM_RISCV_ISA_EXT_ZICSR, true},
-	{"zifencei", KVM_RISCV_ISA_EXT_ZIFENCEI, true},
-	{"zihintntl", KVM_RISCV_ISA_EXT_ZIHINTNTL, true},
-	{"zihintpause", KVM_RISCV_ISA_EXT_ZIHINTPAUSE, true},
-	{"zihpm", KVM_RISCV_ISA_EXT_ZIHPM, true},
-	{"zimop", KVM_RISCV_ISA_EXT_ZIMOP, true},
-	{"zknd", KVM_RISCV_ISA_EXT_ZKND, true},
-	{"zkne", KVM_RISCV_ISA_EXT_ZKNE, true},
-	{"zknh", KVM_RISCV_ISA_EXT_ZKNH, true},
-	{"zkr", KVM_RISCV_ISA_EXT_ZKR, true},
-	{"zksed", KVM_RISCV_ISA_EXT_ZKSED, true},
-	{"zksh", KVM_RISCV_ISA_EXT_ZKSH, true},
-	{"zkt", KVM_RISCV_ISA_EXT_ZKT, true},
-	{"ztso", KVM_RISCV_ISA_EXT_ZTSO, true},
-	{"zvbb", KVM_RISCV_ISA_EXT_ZVBB, true},
-	{"zvbc", KVM_RISCV_ISA_EXT_ZVBC, true},
-	{"zvfh", KVM_RISCV_ISA_EXT_ZVFH, true},
-	{"zvfhmin", KVM_RISCV_ISA_EXT_ZVFHMIN, true},
-	{"zvkb", KVM_RISCV_ISA_EXT_ZVKB, true},
-	{"zvkg", KVM_RISCV_ISA_EXT_ZVKG, true},
-	{"zvkned", KVM_RISCV_ISA_EXT_ZVKNED, true},
-	{"zvknha", KVM_RISCV_ISA_EXT_ZVKNHA, true},
-	{"zvknhb", KVM_RISCV_ISA_EXT_ZVKNHB, true},
-	{"zvksed", KVM_RISCV_ISA_EXT_ZVKSED, true},
-	{"zvksh", KVM_RISCV_ISA_EXT_ZVKSH, true},
-	{"zvkt", KVM_RISCV_ISA_EXT_ZVKT, true},
+	{"smnpm",	KVM_RISCV_ISA_EXT_SMNPM,	true, false},
+	{"smstateen",	KVM_RISCV_ISA_EXT_SMSTATEEN,	true, false},
+	{"ssaia",	KVM_RISCV_ISA_EXT_SSAIA,	true, false},
+	{"sscofpmf",	KVM_RISCV_ISA_EXT_SSCOFPMF,	true, false},
+	{"ssnpm",	KVM_RISCV_ISA_EXT_SSNPM,	true, false},
+	{"sstc",	KVM_RISCV_ISA_EXT_SSTC,		true, false},
+	{"svade",	KVM_RISCV_ISA_EXT_SVADE,	true, false},
+	{"svadu",	KVM_RISCV_ISA_EXT_SVADU,	true, false},
+	{"svinval",	KVM_RISCV_ISA_EXT_SVINVAL,	true, false},
+	{"svnapot",	KVM_RISCV_ISA_EXT_SVNAPOT,	true, false},
+	{"svpbmt",	KVM_RISCV_ISA_EXT_SVPBMT,	true, false},
+	{"svvptc",	KVM_RISCV_ISA_EXT_SVVPTC,	true, false},
+	{"zabha",	KVM_RISCV_ISA_EXT_ZABHA,	true, false},
+	{"zacas",	KVM_RISCV_ISA_EXT_ZACAS,	true, false},
+	{"zawrs",	KVM_RISCV_ISA_EXT_ZAWRS,	true, false},
+	{"zba",		KVM_RISCV_ISA_EXT_ZBA,		true, false},
+	{"zbb",		KVM_RISCV_ISA_EXT_ZBB,		true, false},
+	{"zbc",		KVM_RISCV_ISA_EXT_ZBC,		true, false},
+	{"zbkb",	KVM_RISCV_ISA_EXT_ZBKB,		true, false},
+	{"zbkc",	KVM_RISCV_ISA_EXT_ZBKC,		true, false},
+	{"zbkx",	KVM_RISCV_ISA_EXT_ZBKX,		true, false},
+	{"zbs",		KVM_RISCV_ISA_EXT_ZBS,		true, false},
+	{"zca",		KVM_RISCV_ISA_EXT_ZCA,		true, false},
+	{"zcb",		KVM_RISCV_ISA_EXT_ZCB,		true, false},
+	{"zcd",		KVM_RISCV_ISA_EXT_ZCD,		true, false},
+	{"zcf",		KVM_RISCV_ISA_EXT_ZCF,		true, false},
+	{"zcmop",	KVM_RISCV_ISA_EXT_ZCMOP,	true, false},
+	{"zfa",		KVM_RISCV_ISA_EXT_ZFA,		true, false},
+	{"zfh",		KVM_RISCV_ISA_EXT_ZFH,		true, false},
+	{"zfhmin",	KVM_RISCV_ISA_EXT_ZFHMIN,	true, false},
+	{"zicbom",	KVM_RISCV_ISA_EXT_ZICBOM,	true, false},
+	{"zicboz",	KVM_RISCV_ISA_EXT_ZICBOZ,	true, false},
+	{"ziccrse",	KVM_RISCV_ISA_EXT_ZICCRSE,	true, false},
+	{"zicntr",	KVM_RISCV_ISA_EXT_ZICNTR,	true, false},
+	{"zicond",	KVM_RISCV_ISA_EXT_ZICOND,	true, false},
+	{"zicsr",	KVM_RISCV_ISA_EXT_ZICSR,	true, false},
+	{"zifencei",	KVM_RISCV_ISA_EXT_ZIFENCEI,	true, false},
+	{"zihintntl",	KVM_RISCV_ISA_EXT_ZIHINTNTL,	true, false},
+	{"zihintpause",	KVM_RISCV_ISA_EXT_ZIHINTPAUSE,	true, false},
+	{"zihpm",	KVM_RISCV_ISA_EXT_ZIHPM,	true, false},
+	{"zimop",	KVM_RISCV_ISA_EXT_ZIMOP,	true, false},
+	{"zknd",	KVM_RISCV_ISA_EXT_ZKND,		true, false},
+	{"zkne",	KVM_RISCV_ISA_EXT_ZKNE,		true, false},
+	{"zknh",	KVM_RISCV_ISA_EXT_ZKNH,		true, false},
+	{"zkr",		KVM_RISCV_ISA_EXT_ZKR,		true, false},
+	{"zksed",	KVM_RISCV_ISA_EXT_ZKSED,	true, false},
+	{"zksh",	KVM_RISCV_ISA_EXT_ZKSH,		true, false},
+	{"zkt",		KVM_RISCV_ISA_EXT_ZKT,		true, false},
+	{"ztso",	KVM_RISCV_ISA_EXT_ZTSO,		true, false},
+	{"zvbb",	KVM_RISCV_ISA_EXT_ZVBB,		true, false},
+	{"zvbc",	KVM_RISCV_ISA_EXT_ZVBC,		true, false},
+	{"zvfh",	KVM_RISCV_ISA_EXT_ZVFH,		true, false},
+	{"zvfhmin",	KVM_RISCV_ISA_EXT_ZVFHMIN,	true, false},
+	{"zvkb",	KVM_RISCV_ISA_EXT_ZVKB,		true, false},
+	{"zvkg",	KVM_RISCV_ISA_EXT_ZVKG,		true, false},
+	{"zvkned",	KVM_RISCV_ISA_EXT_ZVKNED,	true, false},
+	{"zvknha",	KVM_RISCV_ISA_EXT_ZVKNHA,	true, false},
+	{"zvknhb",	KVM_RISCV_ISA_EXT_ZVKNHB,	true, false},
+	{"zvksed",	KVM_RISCV_ISA_EXT_ZVKSED,	true, false},
+	{"zvksh",	KVM_RISCV_ISA_EXT_ZVKSH,	true, false},
+	{"zvkt",	KVM_RISCV_ISA_EXT_ZVKT,		true, false},
 };
+
+static bool __isa_ext_disabled(struct kvm *kvm, struct isa_ext_info *info)
+{
+	if (!strncmp(kvm->cfg.arch.cpu_type, "min", 3) &&
+	    !info->min_cpu_included)
+		return true;
+
+	return kvm->cfg.arch.ext_disabled[info->ext_id];
+}
+
+static bool __isa_ext_warn_disable_failure(struct kvm *kvm, struct isa_ext_info *info)
+{
+	if (!strncmp(kvm->cfg.arch.cpu_type, "min", 3) &&
+	    !info->min_cpu_included)
+		return false;
+
+	return true;
+}
+
+bool riscv__isa_extension_disabled(struct kvm *kvm, unsigned long isa_ext_id)
+{
+	struct isa_ext_info *info = NULL;
+	unsigned long i;
+
+	for (i = 0; i < ARRAY_SIZE(isa_info_arr); i++) {
+		if (isa_info_arr[i].ext_id == isa_ext_id) {
+			info = &isa_info_arr[i];
+			break;
+		}
+	}
+	if (!info)
+		return true;
+
+	return __isa_ext_disabled(kvm, info);
+}
+
+int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset)
+{
+	struct kvm *kvm = opt->ptr;
+
+	if ((strncmp(arg, "min", 3) && strncmp(arg, "max", 3)) || strlen(arg) != 3)
+		die("Invalid CPU type %s\n", arg);
+
+	if (!strncmp(arg, "max", 3))
+		kvm->cfg.arch.cpu_type = "max";
+
+	if (!strncmp(arg, "min", 3))
+		kvm->cfg.arch.cpu_type = "min";
+
+	return 0;
+}
 
 static void dump_fdt(const char *dtb_file, void *fdt)
 {
@@ -108,10 +160,8 @@ static void dump_fdt(const char *dtb_file, void *fdt)
 #define CPU_NAME_MAX_LEN 15
 static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 {
-	int cpu, pos, i, index, valid_isa_len;
-	const char *valid_isa_order = "IEMAFDQCLBJTPVNSUHKORWXYZG";
-	int arr_sz = ARRAY_SIZE(isa_info_arr);
 	unsigned long cbom_blksz = 0, cboz_blksz = 0, satp_mode = 0;
+	int i, cpu, pos, arr_sz = ARRAY_SIZE(isa_info_arr);
 
 	_FDT(fdt_begin_node(fdt, "cpus"));
 	_FDT(fdt_property_cell(fdt, "#address-cells", 0x1));
@@ -131,18 +181,8 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 
 		snprintf(cpu_isa, CPU_ISA_MAX_LEN, "rv%ld", vcpu->riscv_xlen);
 		pos = strlen(cpu_isa);
-		valid_isa_len = strlen(valid_isa_order);
-		for (i = 0; i < valid_isa_len; i++) {
-			index = valid_isa_order[i] - 'A';
-			if (vcpu->riscv_isa & (1 << (index)))
-				cpu_isa[pos++] = 'a' + index;
-		}
 
 		for (i = 0; i < arr_sz; i++) {
-			/* Skip single-letter extensions since these are taken care */
-			if (!isa_info_arr[i].multi_letter)
-				continue;
-
 			reg.id = RISCV_ISA_EXT_REG(isa_info_arr[i].ext_id);
 			reg.addr = (unsigned long)&isa_ext_out;
 			if (ioctl(vcpu->vcpu_fd, KVM_GET_ONE_REG, &reg) < 0)
@@ -151,9 +191,10 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 				/* This extension is not available in hardware */
 				continue;
 
-			if (kvm->cfg.arch.ext_disabled[isa_info_arr[i].ext_id]) {
+			if (__isa_ext_disabled(kvm, &isa_info_arr[i])) {
 				isa_ext_out = 0;
-				if (ioctl(vcpu->vcpu_fd, KVM_SET_ONE_REG, &reg) < 0)
+				if ((ioctl(vcpu->vcpu_fd, KVM_SET_ONE_REG, &reg) < 0) &&
+				     __isa_ext_warn_disable_failure(kvm, &isa_info_arr[i]))
 					pr_warning("Failed to disable %s ISA exension\n",
 						   isa_info_arr[i].name);
 				continue;
@@ -178,8 +219,13 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 					   isa_info_arr[i].name);
 				break;
 			}
-			pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN - pos, "_%s",
-					isa_info_arr[i].name);
+
+			if (isa_info_arr[i].multi_letter)
+				pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN - pos, "_%s",
+						isa_info_arr[i].name);
+			else
+				pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN - pos, "%s",
+						isa_info_arr[i].name);
 		}
 		cpu_isa[pos] = '\0';
 

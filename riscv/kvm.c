@@ -20,6 +20,8 @@ u64 kvm__arch_default_ram_address(void)
 
 void kvm__arch_validate_cfg(struct kvm *kvm)
 {
+	if (!kvm->cfg.arch.cpu_type)
+		kvm->cfg.arch.cpu_type = "max";
 }
 
 bool kvm__arch_cpu_supports_vm(void)
