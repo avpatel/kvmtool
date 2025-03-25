@@ -12,71 +12,81 @@
 struct isa_ext_info {
 	const char *name;
 	unsigned long ext_id;
+	bool single_letter;
 };
 
 struct isa_ext_info isa_info_arr[] = {
-	/* sorted alphabetically */
-	{"smnpm", KVM_RISCV_ISA_EXT_SMNPM},
-	{"smstateen", KVM_RISCV_ISA_EXT_SMSTATEEN},
-	{"ssaia", KVM_RISCV_ISA_EXT_SSAIA},
-	{"sscofpmf", KVM_RISCV_ISA_EXT_SSCOFPMF},
-	{"ssnpm", KVM_RISCV_ISA_EXT_SSNPM},
-	{"sstc", KVM_RISCV_ISA_EXT_SSTC},
-	{"svade", KVM_RISCV_ISA_EXT_SVADE},
-	{"svadu", KVM_RISCV_ISA_EXT_SVADU},
-	{"svinval", KVM_RISCV_ISA_EXT_SVINVAL},
-	{"svnapot", KVM_RISCV_ISA_EXT_SVNAPOT},
-	{"svpbmt", KVM_RISCV_ISA_EXT_SVPBMT},
-	{"svvptc", KVM_RISCV_ISA_EXT_SVVPTC},
-	{"zabha", KVM_RISCV_ISA_EXT_ZABHA},
-	{"zacas", KVM_RISCV_ISA_EXT_ZACAS},
-	{"zawrs", KVM_RISCV_ISA_EXT_ZAWRS},
-	{"zba", KVM_RISCV_ISA_EXT_ZBA},
-	{"zbb", KVM_RISCV_ISA_EXT_ZBB},
-	{"zbc", KVM_RISCV_ISA_EXT_ZBC},
-	{"zbkb", KVM_RISCV_ISA_EXT_ZBKB},
-	{"zbkc", KVM_RISCV_ISA_EXT_ZBKC},
-	{"zbkx", KVM_RISCV_ISA_EXT_ZBKX},
-	{"zbs", KVM_RISCV_ISA_EXT_ZBS},
-	{"zca", KVM_RISCV_ISA_EXT_ZCA},
-	{"zcb", KVM_RISCV_ISA_EXT_ZCB},
-	{"zcd", KVM_RISCV_ISA_EXT_ZCD},
-	{"zcf", KVM_RISCV_ISA_EXT_ZCF},
-	{"zcmop", KVM_RISCV_ISA_EXT_ZCMOP},
-	{"zfa", KVM_RISCV_ISA_EXT_ZFA},
-	{"zfh", KVM_RISCV_ISA_EXT_ZFH},
-	{"zfhmin", KVM_RISCV_ISA_EXT_ZFHMIN},
-	{"zicbom", KVM_RISCV_ISA_EXT_ZICBOM},
-	{"zicboz", KVM_RISCV_ISA_EXT_ZICBOZ},
-	{"ziccrse", KVM_RISCV_ISA_EXT_ZICCRSE},
-	{"zicntr", KVM_RISCV_ISA_EXT_ZICNTR},
-	{"zicond", KVM_RISCV_ISA_EXT_ZICOND},
-	{"zicsr", KVM_RISCV_ISA_EXT_ZICSR},
-	{"zifencei", KVM_RISCV_ISA_EXT_ZIFENCEI},
-	{"zihintntl", KVM_RISCV_ISA_EXT_ZIHINTNTL},
-	{"zihintpause", KVM_RISCV_ISA_EXT_ZIHINTPAUSE},
-	{"zihpm", KVM_RISCV_ISA_EXT_ZIHPM},
-	{"zimop", KVM_RISCV_ISA_EXT_ZIMOP},
-	{"zknd", KVM_RISCV_ISA_EXT_ZKND},
-	{"zkne", KVM_RISCV_ISA_EXT_ZKNE},
-	{"zknh", KVM_RISCV_ISA_EXT_ZKNH},
-	{"zkr", KVM_RISCV_ISA_EXT_ZKR},
-	{"zksed", KVM_RISCV_ISA_EXT_ZKSED},
-	{"zksh", KVM_RISCV_ISA_EXT_ZKSH},
-	{"zkt", KVM_RISCV_ISA_EXT_ZKT},
-	{"ztso", KVM_RISCV_ISA_EXT_ZTSO},
-	{"zvbb", KVM_RISCV_ISA_EXT_ZVBB},
-	{"zvbc", KVM_RISCV_ISA_EXT_ZVBC},
-	{"zvfh", KVM_RISCV_ISA_EXT_ZVFH},
-	{"zvfhmin", KVM_RISCV_ISA_EXT_ZVFHMIN},
-	{"zvkb", KVM_RISCV_ISA_EXT_ZVKB},
-	{"zvkg", KVM_RISCV_ISA_EXT_ZVKG},
-	{"zvkned", KVM_RISCV_ISA_EXT_ZVKNED},
-	{"zvknha", KVM_RISCV_ISA_EXT_ZVKNHA},
-	{"zvknhb", KVM_RISCV_ISA_EXT_ZVKNHB},
-	{"zvksed", KVM_RISCV_ISA_EXT_ZVKSED},
-	{"zvksh", KVM_RISCV_ISA_EXT_ZVKSH},
-	{"zvkt", KVM_RISCV_ISA_EXT_ZVKT},
+	/* single-letter ordered canonically as "IEMAFDQCLBJTPVNSUHKORWXYZG" */
+	{"i",		KVM_RISCV_ISA_EXT_I,	.single_letter = true},
+	{"m",		KVM_RISCV_ISA_EXT_M,	.single_letter = true},
+	{"a",		KVM_RISCV_ISA_EXT_A,	.single_letter = true},
+	{"f",		KVM_RISCV_ISA_EXT_F,	.single_letter = true},
+	{"d",		KVM_RISCV_ISA_EXT_D,	.single_letter = true},
+	{"c",		KVM_RISCV_ISA_EXT_C,	.single_letter = true},
+	{"v",		KVM_RISCV_ISA_EXT_V,	.single_letter = true},
+	{"h",		KVM_RISCV_ISA_EXT_H,	.single_letter = true},
+	/* multi-letter sorted alphabetically */
+	{"smnpm",	KVM_RISCV_ISA_EXT_SMNPM},
+	{"smstateen",	KVM_RISCV_ISA_EXT_SMSTATEEN},
+	{"ssaia",	KVM_RISCV_ISA_EXT_SSAIA},
+	{"sscofpmf",	KVM_RISCV_ISA_EXT_SSCOFPMF},
+	{"ssnpm",	KVM_RISCV_ISA_EXT_SSNPM},
+	{"sstc",	KVM_RISCV_ISA_EXT_SSTC},
+	{"svade",	KVM_RISCV_ISA_EXT_SVADE},
+	{"svadu",	KVM_RISCV_ISA_EXT_SVADU},
+	{"svinval",	KVM_RISCV_ISA_EXT_SVINVAL},
+	{"svnapot",	KVM_RISCV_ISA_EXT_SVNAPOT},
+	{"svpbmt",	KVM_RISCV_ISA_EXT_SVPBMT},
+	{"svvptc",	KVM_RISCV_ISA_EXT_SVVPTC},
+	{"zabha",	KVM_RISCV_ISA_EXT_ZABHA},
+	{"zacas",	KVM_RISCV_ISA_EXT_ZACAS},
+	{"zawrs",	KVM_RISCV_ISA_EXT_ZAWRS},
+	{"zba",		KVM_RISCV_ISA_EXT_ZBA},
+	{"zbb",		KVM_RISCV_ISA_EXT_ZBB},
+	{"zbc",		KVM_RISCV_ISA_EXT_ZBC},
+	{"zbkb",	KVM_RISCV_ISA_EXT_ZBKB},
+	{"zbkc",	KVM_RISCV_ISA_EXT_ZBKC},
+	{"zbkx",	KVM_RISCV_ISA_EXT_ZBKX},
+	{"zbs",		KVM_RISCV_ISA_EXT_ZBS},
+	{"zca",		KVM_RISCV_ISA_EXT_ZCA},
+	{"zcb",		KVM_RISCV_ISA_EXT_ZCB},
+	{"zcd",		KVM_RISCV_ISA_EXT_ZCD},
+	{"zcf",		KVM_RISCV_ISA_EXT_ZCF},
+	{"zcmop",	KVM_RISCV_ISA_EXT_ZCMOP},
+	{"zfa",		KVM_RISCV_ISA_EXT_ZFA},
+	{"zfh",		KVM_RISCV_ISA_EXT_ZFH},
+	{"zfhmin",	KVM_RISCV_ISA_EXT_ZFHMIN},
+	{"zicbom",	KVM_RISCV_ISA_EXT_ZICBOM},
+	{"zicboz",	KVM_RISCV_ISA_EXT_ZICBOZ},
+	{"ziccrse",	KVM_RISCV_ISA_EXT_ZICCRSE},
+	{"zicntr",	KVM_RISCV_ISA_EXT_ZICNTR},
+	{"zicond",	KVM_RISCV_ISA_EXT_ZICOND},
+	{"zicsr",	KVM_RISCV_ISA_EXT_ZICSR},
+	{"zifencei",	KVM_RISCV_ISA_EXT_ZIFENCEI},
+	{"zihintntl",	KVM_RISCV_ISA_EXT_ZIHINTNTL},
+	{"zihintpause",	KVM_RISCV_ISA_EXT_ZIHINTPAUSE},
+	{"zihpm",	KVM_RISCV_ISA_EXT_ZIHPM},
+	{"zimop",	KVM_RISCV_ISA_EXT_ZIMOP},
+	{"zknd",	KVM_RISCV_ISA_EXT_ZKND},
+	{"zkne",	KVM_RISCV_ISA_EXT_ZKNE},
+	{"zknh",	KVM_RISCV_ISA_EXT_ZKNH},
+	{"zkr",		KVM_RISCV_ISA_EXT_ZKR},
+	{"zksed",	KVM_RISCV_ISA_EXT_ZKSED},
+	{"zksh",	KVM_RISCV_ISA_EXT_ZKSH},
+	{"zkt",		KVM_RISCV_ISA_EXT_ZKT},
+	{"ztso",	KVM_RISCV_ISA_EXT_ZTSO},
+	{"zvbb",	KVM_RISCV_ISA_EXT_ZVBB},
+	{"zvbc",	KVM_RISCV_ISA_EXT_ZVBC},
+	{"zvfh",	KVM_RISCV_ISA_EXT_ZVFH},
+	{"zvfhmin",	KVM_RISCV_ISA_EXT_ZVFHMIN},
+	{"zvkb",	KVM_RISCV_ISA_EXT_ZVKB},
+	{"zvkg",	KVM_RISCV_ISA_EXT_ZVKG},
+	{"zvkned",	KVM_RISCV_ISA_EXT_ZVKNED},
+	{"zvknha",	KVM_RISCV_ISA_EXT_ZVKNHA},
+	{"zvknhb",	KVM_RISCV_ISA_EXT_ZVKNHB},
+	{"zvksed",	KVM_RISCV_ISA_EXT_ZVKSED},
+	{"zvksh",	KVM_RISCV_ISA_EXT_ZVKSH},
+	{"zvkt",	KVM_RISCV_ISA_EXT_ZVKT},
 };
 
 static void dump_fdt(const char *dtb_file, void *fdt)
@@ -98,10 +108,8 @@ static void dump_fdt(const char *dtb_file, void *fdt)
 #define CPU_NAME_MAX_LEN 15
 static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 {
-	int cpu, pos, i, index, valid_isa_len;
-	const char *valid_isa_order = "IEMAFDQCLBJTPVNSUHKORWXYZG";
-	int arr_sz = ARRAY_SIZE(isa_info_arr);
 	unsigned long cbom_blksz = 0, cboz_blksz = 0, satp_mode = 0;
+	int i, cpu, pos, arr_sz = ARRAY_SIZE(isa_info_arr);
 
 	_FDT(fdt_begin_node(fdt, "cpus"));
 	_FDT(fdt_property_cell(fdt, "#address-cells", 0x1));
@@ -121,12 +129,6 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 
 		snprintf(cpu_isa, CPU_ISA_MAX_LEN, "rv%ld", vcpu->riscv_xlen);
 		pos = strlen(cpu_isa);
-		valid_isa_len = strlen(valid_isa_order);
-		for (i = 0; i < valid_isa_len; i++) {
-			index = valid_isa_order[i] - 'A';
-			if (vcpu->riscv_isa & (1 << (index)))
-				cpu_isa[pos++] = 'a' + index;
-		}
 
 		for (i = 0; i < arr_sz; i++) {
 			reg.id = RISCV_ISA_EXT_REG(isa_info_arr[i].ext_id);
@@ -164,7 +166,9 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 					   isa_info_arr[i].name);
 				break;
 			}
-			pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN - pos, "_%s",
+
+			pos += snprintf(cpu_isa + pos, CPU_ISA_MAX_LEN - pos, "%s%s",
+					isa_info_arr[i].single_letter ? "" : "_",
 					isa_info_arr[i].name);
 		}
 		cpu_isa[pos] = '\0';
