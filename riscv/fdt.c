@@ -13,16 +13,17 @@ struct isa_ext_info {
 	const char *name;
 	unsigned long ext_id;
 	bool single_letter;
+	bool min_enabled;
 };
 
 struct isa_ext_info isa_info_arr[] = {
 	/* single-letter ordered canonically as "IEMAFDQCLBJTPVNSUHKORWXYZG" */
-	{"i",		KVM_RISCV_ISA_EXT_I,	.single_letter = true},
-	{"m",		KVM_RISCV_ISA_EXT_M,	.single_letter = true},
-	{"a",		KVM_RISCV_ISA_EXT_A,	.single_letter = true},
-	{"f",		KVM_RISCV_ISA_EXT_F,	.single_letter = true},
-	{"d",		KVM_RISCV_ISA_EXT_D,	.single_letter = true},
-	{"c",		KVM_RISCV_ISA_EXT_C,	.single_letter = true},
+	{"i",		KVM_RISCV_ISA_EXT_I,	.single_letter = true, .min_enabled = true},
+	{"m",		KVM_RISCV_ISA_EXT_M,	.single_letter = true, .min_enabled = true},
+	{"a",		KVM_RISCV_ISA_EXT_A,	.single_letter = true, .min_enabled = true},
+	{"f",		KVM_RISCV_ISA_EXT_F,	.single_letter = true, .min_enabled = true},
+	{"d",		KVM_RISCV_ISA_EXT_D,	.single_letter = true, .min_enabled = true},
+	{"c",		KVM_RISCV_ISA_EXT_C,	.single_letter = true, .min_enabled = true},
 	{"v",		KVM_RISCV_ISA_EXT_V,	.single_letter = true},
 	{"h",		KVM_RISCV_ISA_EXT_H,	.single_letter = true},
 	/* multi-letter sorted alphabetically */
@@ -89,6 +90,56 @@ struct isa_ext_info isa_info_arr[] = {
 	{"zvkt",	KVM_RISCV_ISA_EXT_ZVKT},
 };
 
+static bool __isa_ext_disabled(struct kvm *kvm, struct isa_ext_info *info)
+{
+	if (kvm->cfg.arch.cpu_type == RISCV__CPU_TYPE_MIN &&
+	    !info->min_enabled)
+		return true;
+
+	return kvm->cfg.arch.ext_disabled[info->ext_id];
+}
+
+static bool __isa_ext_warn_disable_failure(struct kvm *kvm, struct isa_ext_info *info)
+{
+	if (kvm->cfg.arch.cpu_type == RISCV__CPU_TYPE_MIN &&
+	    !info->min_enabled)
+		return false;
+
+	return true;
+}
+
+bool riscv__isa_extension_disabled(struct kvm *kvm, unsigned long isa_ext_id)
+{
+	struct isa_ext_info *info = NULL;
+	unsigned long i;
+
+	for (i = 0; i < ARRAY_SIZE(isa_info_arr); i++) {
+		if (isa_info_arr[i].ext_id == isa_ext_id) {
+			info = &isa_info_arr[i];
+			break;
+		}
+	}
+	if (!info)
+		return true;
+
+	return __isa_ext_disabled(kvm, info);
+}
+
+int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset)
+{
+	struct kvm *kvm = opt->ptr;
+
+	if ((strncmp(arg, "min", 3) && strncmp(arg, "max", 3)) || strlen(arg) != 3)
+		die("Invalid CPU type %s\n", arg);
+
+	if (!strcmp(arg, "max"))
+		kvm->cfg.arch.cpu_type = RISCV__CPU_TYPE_MAX;
+	else
+		kvm->cfg.arch.cpu_type = RISCV__CPU_TYPE_MIN;
+
+	return 0;
+}
+
 static void dump_fdt(const char *dtb_file, void *fdt)
 {
 	int count, fd;
@@ -139,9 +190,10 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 				/* This extension is not available in hardware */
 				continue;
 
-			if (kvm->cfg.arch.ext_disabled[isa_info_arr[i].ext_id]) {
+			if (__isa_ext_disabled(kvm, &isa_info_arr[i])) {
 				isa_ext_out = 0;
-				if (ioctl(vcpu->vcpu_fd, KVM_SET_ONE_REG, &reg) < 0)
+				if (ioctl(vcpu->vcpu_fd, KVM_SET_ONE_REG, &reg) < 0 &&
+				    __isa_ext_warn_disable_failure(kvm, &isa_info_arr[i]))
 					pr_warning("Failed to disable %s ISA exension\n",
 						   isa_info_arr[i].name);
 				continue;
