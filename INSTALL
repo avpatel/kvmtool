@@ -26,7 +26,7 @@ For Fedora based systems:
 For OpenSUSE based systems:
 	# zypper install glibc-devel-static
 
-Architectures which require device tree (PowerPC, ARM, ARM64, RISC-V) also
+Architectures which require device tree (PowerPC, ARM64, RISC-V) also
 require libfdt.
 	deb: $ sudo apt-get install libfdt-dev
 	Fedora: # yum install libfdt-devel
@@ -61,16 +61,15 @@ to the Linux name of the architecture. Architectures supported:
 - i386
 - x86_64
 - powerpc
-- arm
 - arm64
 - mips
 - riscv
 If ARCH is not provided, the target architecture will be automatically
 determined by running "uname -m" on your host, resulting in a native build.
 
-To cross-compile to ARM for instance, install a cross-compiler, put the
+To cross-compile to arm64 for instance, install a cross-compiler, put the
 required libraries in the cross-compiler's SYSROOT and type:
-$ make CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm
+$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64
 
 Missing libraries when cross-compiling
 ---------------------------------------
@@ -82,7 +81,7 @@ On multiarch system you should be able to install those be appending
 the architecture name after the package (example for ARM64):
 $ sudo apt-get install libfdt-dev:arm64
 
-PowerPC, ARM/ARM64 and RISC-V require libfdt to be installed. If you cannot use
+PowerPC, ARM64 and RISC-V require libfdt to be installed. If you cannot use
 precompiled mulitarch packages, you could either copy the required header and
 library files from an installed target system into the SYSROOT (you will need
 /usr/include/*fdt*.h and /usr/lib64/libfdt-v.v.v.so and its symlinks), or you

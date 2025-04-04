@@ -166,35 +166,24 @@ ifeq ($(ARCH), powerpc)
 	ARCH_WANT_LIBFDT := y
 endif
 
-# ARM
-OBJS_ARM_COMMON		:= arm/fdt.o arm/gic.o arm/gicv2m.o arm/ioport.o \
-			   arm/kvm.o arm/kvm-cpu.o arm/pci.o arm/timer.o \
-			   hw/serial.o
-HDRS_ARM_COMMON		:= arm/include
-ifeq ($(ARCH), arm)
-	DEFINES		+= -DCONFIG_ARM
-	OBJS		+= $(OBJS_ARM_COMMON)
-	OBJS		+= arm/aarch32/arm-cpu.o
-	OBJS		+= arm/aarch32/kvm-cpu.o
-	OBJS		+= arm/aarch32/kvm.o
-	ARCH_INCLUDE	:= $(HDRS_ARM_COMMON)
-	ARCH_INCLUDE	+= -Iarm/aarch32/include
-	CFLAGS		+= -march=armv7-a
-
-	ARCH_WANT_LIBFDT := y
-	ARCH_HAS_FLASH_MEM := y
-endif
-
 # ARM64
 ifeq ($(ARCH), arm64)
 	DEFINES		+= -DCONFIG_ARM64
-	OBJS		+= $(OBJS_ARM_COMMON)
+	OBJS		+= arm/fdt.o
+	OBJS		+= arm/gic.o
+	OBJS		+= arm/gicv2m.o
+	OBJS		+= arm/ioport.o
+	OBJS		+= arm/kvm.o
+	OBJS		+= arm/kvm-cpu.o
+	OBJS		+= arm/pci.o
+	OBJS		+= arm/timer.o
+	OBJS		+= hw/serial.o
 	OBJS		+= arm/aarch64/arm-cpu.o
 	OBJS		+= arm/aarch64/kvm-cpu.o
 	OBJS		+= arm/aarch64/kvm.o
 	OBJS		+= arm/aarch64/pvtime.o
 	OBJS		+= arm/aarch64/pmu.o
-	ARCH_INCLUDE	:= $(HDRS_ARM_COMMON)
+	ARCH_INCLUDE	:= arm/include
 	ARCH_INCLUDE	+= -Iarm/aarch64/include
 
 	ARCH_WANT_LIBFDT := y

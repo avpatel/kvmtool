@@ -182,7 +182,7 @@ static int loglevel_parser(const struct option *opt, const char *arg, int unset)
 	" in megabytes (M)"
 #endif
 
-#if defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
+#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
 #define VIRTIO_TRANS_OPT_HELP_SHORT    "[pci|pci-legacy|mmio|mmio-legacy]"
 #else
 #define VIRTIO_TRANS_OPT_HELP_SHORT    "[pci|pci-legacy]"

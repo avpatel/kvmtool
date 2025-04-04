@@ -31,7 +31,7 @@ int virtio_transport_parser(const struct option *opt, const char *arg, int unset
 			*type = VIRTIO_PCI;
 		} else if (!strcmp(arg, "pci-legacy")) {
 			*type = VIRTIO_PCI_LEGACY;
-#if defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
+#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
 		} else if (!strcmp(arg, "mmio")) {
 			*type = VIRTIO_MMIO;
 		} else if (!strcmp(arg, "mmio-legacy")) {

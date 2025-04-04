@@ -443,7 +443,7 @@ static void cfi_flash_write(struct cfi_flash_device *sfdev, u16 command,
  * If we are in ARRAY_READ mode, we can map the flash array directly
  * into the guest, just as read-only. This greatly improves read
  * performance, and avoids problems with exits due to accesses from
- * load instructions without syndrome information (on ARM).
+ * load instructions without syndrome information (on arm64).
  * Also it could allow code to be executed XIP in there.
  */
 static int map_flash_memory(struct kvm *kvm, struct cfi_flash_device *sfdev)
