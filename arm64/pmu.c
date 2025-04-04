@@ -5,11 +5,10 @@
 #include "linux/err.h"
 
 #include "kvm/fdt.h"
+#include "kvm/gic.h"
 #include "kvm/kvm.h"
 #include "kvm/kvm-cpu.h"
 #include "kvm/util.h"
-
-#include "arm-common/gic.h"
 
 #include "asm/pmu.h"
 

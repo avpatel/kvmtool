@@ -1,10 +1,9 @@
 #include "kvm/fdt.h"
+#include "kvm/gic.h"
 #include "kvm/kvm.h"
 #include "kvm/kvm-cpu.h"
+#include "kvm/timer.h"
 #include "kvm/util.h"
-
-#include "arm-common/gic.h"
-#include "arm-common/timer.h"
 
 void timer__generate_fdt_nodes(void *fdt, struct kvm *kvm, int *irqs)
 {

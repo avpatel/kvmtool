@@ -2,10 +2,9 @@
 #include <stdlib.h>
 
 #include "kvm/irq.h"
+#include "kvm/gic.h"
 #include "kvm/kvm.h"
 #include "kvm/util.h"
-
-#include "arm-common/gic.h"
 
 #define GICV2M_MSI_TYPER	0x008
 #define GICV2M_MSI_SETSPI	0x040

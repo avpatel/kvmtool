@@ -10,7 +10,7 @@
 #include <linux/const.h>
 #include <linux/types.h>
 
-#include "arm-common/gic.h"
+#include "kvm/gic.h"
 
 /*
  * The memory map used for ARM guests (not to scale):

@@ -1,12 +1,11 @@
 #include "kvm/devices.h"
 #include "kvm/fdt.h"
+#include "kvm/gic.h"
 #include "kvm/kvm.h"
 #include "kvm/of_pci.h"
 #include "kvm/pci.h"
+#include "kvm/pci-arch.h"
 #include "kvm/util.h"
-
-#include "arm-common/pci.h"
-#include "arm-common/gic.h"
 
 /*
  * An entry in the interrupt-map table looks like:

@@ -1,11 +1,10 @@
 #include "kvm/devices.h"
 #include "kvm/fdt.h"
+#include "kvm/gic.h"
 #include "kvm/kvm.h"
 #include "kvm/kvm-cpu.h"
+#include "kvm/pci-arch.h"
 #include "kvm/virtio-mmio.h"
-
-#include "arm-common/gic.h"
-#include "arm-common/pci.h"
 
 #include <stdbool.h>
 

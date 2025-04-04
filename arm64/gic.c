@@ -1,9 +1,8 @@
 #include "kvm/fdt.h"
+#include "kvm/gic.h"
 #include "kvm/irq.h"
 #include "kvm/kvm.h"
 #include "kvm/virtio.h"
-
-#include "arm-common/gic.h"
 
 #include <linux/byteorder.h>
 #include <linux/kernel.h>

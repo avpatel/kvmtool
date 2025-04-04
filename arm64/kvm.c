@@ -4,8 +4,7 @@
 #include "kvm/8250-serial.h"
 #include "kvm/virtio-console.h"
 #include "kvm/fdt.h"
-
-#include "arm-common/gic.h"
+#include "kvm/gic.h"
 
 #include <linux/byteorder.h>
 #include <linux/cpumask.h>
