@@ -179,7 +179,6 @@ ifeq ($(ARCH), arm64)
 	OBJS		+= arm/timer.o
 	OBJS		+= hw/serial.o
 	OBJS		+= arm/arm-cpu.o
-	OBJS		+= arm/aarch64/kvm-cpu.o
 	OBJS		+= arm/pvtime.o
 	OBJS		+= arm/pmu.o
 	ARCH_INCLUDE	:= arm/include

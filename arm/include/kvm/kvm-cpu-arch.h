@@ -1,11 +1,17 @@
 #ifndef ARM_COMMON__KVM_CPU_ARCH_H
 #define ARM_COMMON__KVM_CPU_ARCH_H
 
+#include "kvm/kvm.h"
+
 #include <linux/kvm.h>
 #include <pthread.h>
 #include <stdbool.h>
 
-struct kvm;
+#define ARM_MPIDR_HWID_BITMASK	0xFF00FFFFFFUL
+#define ARM_CPU_ID		3, 0, 0, 0
+#define ARM_CPU_ID_MPIDR	5
+#define ARM_CPU_CTRL		3, 0, 1, 0
+#define ARM_CPU_CTRL_SCTLR_EL1	0
 
 struct kvm_cpu {
 	pthread_t	thread;
@@ -58,5 +64,7 @@ static inline bool kvm_cpu__emulate_mmio(struct kvm_cpu *vcpu, u64 phys_addr,
 }
 
 unsigned long kvm_cpu__get_vcpu_mpidr(struct kvm_cpu *vcpu);
+int kvm_cpu__setup_pvtime(struct kvm_cpu *vcpu);
+int kvm_cpu__teardown_pvtime(struct kvm *kvm);
 
 #endif /* ARM_COMMON__KVM_CPU_ARCH_H */
