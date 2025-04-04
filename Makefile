@@ -169,19 +169,19 @@ endif
 # ARM64
 ifeq ($(ARCH), arm64)
 	DEFINES		+= -DCONFIG_ARM64
-	OBJS		+= arm/fdt.o
-	OBJS		+= arm/gic.o
-	OBJS		+= arm/gicv2m.o
-	OBJS		+= arm/ioport.o
-	OBJS		+= arm/kvm.o
-	OBJS		+= arm/kvm-cpu.o
-	OBJS		+= arm/pci.o
-	OBJS		+= arm/timer.o
+	OBJS		+= arm64/fdt.o
+	OBJS		+= arm64/gic.o
+	OBJS		+= arm64/gicv2m.o
+	OBJS		+= arm64/ioport.o
+	OBJS		+= arm64/kvm.o
+	OBJS		+= arm64/kvm-cpu.o
+	OBJS		+= arm64/pci.o
+	OBJS		+= arm64/timer.o
 	OBJS		+= hw/serial.o
-	OBJS		+= arm/arm-cpu.o
-	OBJS		+= arm/pvtime.o
-	OBJS		+= arm/pmu.o
-	ARCH_INCLUDE	:= arm/include
+	OBJS		+= arm64/arm-cpu.o
+	OBJS		+= arm64/pvtime.o
+	OBJS		+= arm64/pmu.o
+	ARCH_INCLUDE	:= arm64/include
 
 	ARCH_WANT_LIBFDT := y
 	ARCH_HAS_FLASH_MEM := y
