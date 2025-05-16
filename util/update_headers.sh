@@ -48,10 +48,10 @@ copy_optional_arch () {
 
 for arch in arm64 mips powerpc riscv x86
 do
-	case "$arch" in
-		arm64)	KVMTOOL_PATH=arm/aarch64
-			copy_optional_arch asm/sve_context.h ;;
-		*) KVMTOOL_PATH=$arch ;;
+	KVMTOOL_PATH=$arch
+
+	case $arch in
+		arm64) copy_optional_arch asm/sve_context.h ;;
 	esac
 	cp -- "$LINUX_ROOT/arch/$arch/include/uapi/asm/kvm.h" \
 		"$KVMTOOL_PATH/include/asm"
