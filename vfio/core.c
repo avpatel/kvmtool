@@ -3,6 +3,7 @@
 #include "kvm/ioport.h"
 
 #include <linux/list.h>
+#include <libgen.h>
 
 #define VFIO_DEV_DIR		"/dev/vfio"
 #define VFIO_DEV_NODE		VFIO_DEV_DIR "/vfio"
