@@ -1,6 +1,7 @@
 #ifndef KVM__KVM_ARCH_H
 #define KVM__KVM_ARCH_H
 
+#include <sched.h>
 #include <stdbool.h>
 #include <linux/const.h>
 #include <linux/sizes.h>
@@ -74,6 +75,8 @@ struct kvm_arch {
 	u64	initrd_guest_start;
 	u64	initrd_size;
 	u64	dtb_guest_start;
+
+	struct list_head *affinity_list;
 };
 
 static inline bool riscv_addr_in_ioport_region(u64 phys_addr)
@@ -91,6 +94,7 @@ enum irqchip_type {
 };
 
 bool riscv__isa_extension_disabled(struct kvm *kvm, unsigned long ext_id);
+const cpu_set_t *riscv__get_vcpu_affinity(struct kvm *kvm, unsigned long vcpu_id);
 
 extern enum irqchip_type riscv_irqchip;
 extern bool riscv_irqchip_inkernel;

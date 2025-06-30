@@ -6,7 +6,9 @@
 #include <stdbool.h>
 
 #include <linux/byteorder.h>
+#include <linux/cpumask.h>
 #include <linux/kernel.h>
+#include <linux/list.h>
 #include <linux/sizes.h>
 
 struct isa_ext_info {
@@ -174,6 +176,86 @@ int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset)
 	}
 
 	return 0;
+}
+
+struct riscv_vcpu_affinity {
+	struct list_head head;
+	unsigned long vcpu_id;
+	cpumask_t *vcpu_cpumask;
+	cpu_set_t *vcpu_cpuset;
+};
+
+int riscv__vcpu_affinity_parser(const struct option *opt, const char *arg, int unset)
+{
+	struct riscv_vcpu_affinity *entry;
+	struct kvm *kvm = opt->ptr;
+	unsigned long vcpu_id;
+	char *cpulist;
+	int cpu, ret;
+
+	if (!kvm->arch.affinity_list) {
+		kvm->arch.affinity_list = calloc(1, sizeof(*kvm->arch.affinity_list));
+		if (!kvm->arch.affinity_list)
+			die("No memory for affinity_list");
+		INIT_LIST_HEAD(kvm->arch.affinity_list);
+	}
+
+	vcpu_id = strtoul(arg, &cpulist, 10);
+	if (vcpu_id == ULONG_MAX)
+		die("Failed to parse vcpu_id in parameter %s", arg);
+	if (*cpulist != '@')
+		die("No '@' found in parameter %s", arg);
+	cpulist++;
+	if (!strlen(cpulist))
+		die("Empty cpuset in parameter %s", arg);
+
+	entry = calloc(1, sizeof(*entry));
+	if (!entry)
+		die("No memory for affinity_entry");
+	INIT_LIST_HEAD(&entry->head);
+	entry->vcpu_id = vcpu_id;
+
+	entry->vcpu_cpumask = calloc(1, cpumask_size());
+	if (!entry->vcpu_cpumask) {
+		free(entry);
+		die("No memory for vcpu_cpumask");
+	}
+
+	ret = cpulist_parse(cpulist, entry->vcpu_cpumask);
+	if (ret) {
+		free(entry->vcpu_cpumask);
+		free(entry);
+		die("Failed to parse cpuset from parameter %s", arg);
+	}
+
+	entry->vcpu_cpuset = CPU_ALLOC(NR_CPUS);
+	if (!entry->vcpu_cpuset) {
+		free(entry->vcpu_cpumask);
+		free(entry);
+		die("No memory for vcpu_cpuset");
+	}
+	CPU_ZERO_S(CPU_ALLOC_SIZE(NR_CPUS), entry->vcpu_cpuset);
+
+	for_each_cpu(cpu, entry->vcpu_cpumask)
+		CPU_SET(cpu, entry->vcpu_cpuset);
+
+	list_add_tail(&entry->head, kvm->arch.affinity_list);
+	return 0;
+}
+
+const cpu_set_t *riscv__get_vcpu_affinity(struct kvm *kvm, unsigned long vcpu_id)
+{
+	struct riscv_vcpu_affinity *entry;
+
+	if (!kvm->arch.affinity_list)
+		return NULL;
+
+	list_for_each_entry(entry, kvm->arch.affinity_list, head) {
+		if (entry->vcpu_id == vcpu_id)
+			return entry->vcpu_cpuset;
+	}
+
+	return NULL;
 }
 
 static void dump_fdt(const char *dtb_file, void *fdt)
