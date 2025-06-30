@@ -311,8 +311,17 @@ void kvm_cpu__reset_vcpu(struct kvm_cpu *vcpu)
 {
 	struct kvm *kvm = vcpu->kvm;
 	struct kvm_mp_state mp_state;
+	const cpu_set_t *affinity;
 	struct kvm_one_reg reg;
 	unsigned long data;
+	int ret;
+
+	affinity = riscv__get_vcpu_affinity(kvm, vcpu->cpu_id);
+	if (affinity) {
+		ret = sched_setaffinity(0, sizeof(cpu_set_t), affinity);
+		if (ret == -1)
+			die_perror("sched_setaffinity failed");
+	}
 
 	if (ioctl(vcpu->vcpu_fd, KVM_GET_MP_STATE, &mp_state) < 0)
 		die_perror("KVM_GET_MP_STATE failed");
