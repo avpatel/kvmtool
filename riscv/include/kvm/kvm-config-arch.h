@@ -20,11 +20,16 @@ struct kvm_config_arch {
 };
 
 int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset);
+int riscv__vcpu_affinity_parser(const struct option *opt, const char *arg, int unset);
 
 #define OPT_ARCH_RUN(pfx, cfg)						\
 	pfx,								\
 	OPT_CALLBACK('\0', "cpu-type", NULL, "min or max",		\
 		     "Choose the cpu type (default is max).", riscv__cpu_type_parser, kvm),\
+	OPT_CALLBACK('\0', "vcpu-affinity", NULL, "vcpu_id@cpulist",	\
+		     "Specify the CPU affinity that will apply to a"	\
+		     " particular VCPU with specified vcpu_id.",	\
+		     riscv__vcpu_affinity_parser, kvm),			\
 	OPT_STRING('\0', "dump-dtb", &(cfg)->dump_dtb_filename,		\
 		   ".dtb file", "Dump generated .dtb to specified file"),\
 	OPT_U64('\0', "suspend-seconds",				\
