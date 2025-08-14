@@ -156,8 +156,10 @@ static bool virtio_pci__common_read(struct virtio_device *vdev,
 		ioport__write32(data, val);
 		break;
 	case VIRTIO_PCI_COMMON_DF:
-		if (vpci->device_features_sel > 1)
+		if (vpci->device_features_sel > 1) {
+			ioport__write32(data, 0);
 			break;
+		}
 		features |= vdev->ops->get_host_features(vpci->kvm, vpci->dev);
 		val = features >> (32 * vpci->device_features_sel);
 		ioport__write32(data, val);
