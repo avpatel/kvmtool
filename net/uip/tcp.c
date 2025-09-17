@@ -6,7 +6,7 @@
 #include <linux/list.h>
 #include <arpa/inet.h>
 
-static int uip_tcp_socket_close(struct uip_tcp_socket *sk, int how)
+static int uip_tcp_socket_close_locked(struct uip_tcp_socket *sk, int how)
 {
 	shutdown(sk->fd, how);
 
@@ -14,15 +14,24 @@ static int uip_tcp_socket_close(struct uip_tcp_socket *sk, int how)
 		shutdown(sk->fd, SHUT_RDWR);
 		close(sk->fd);
 
-		mutex_lock(sk->lock);
 		list_del(&sk->list);
-		mutex_unlock(sk->lock);
 
 		free(sk->buf);
 		free(sk);
 	}
 
 	return 0;
+}
+
+static int uip_tcp_socket_close(struct uip_tcp_socket *sk, int how)
+{
+	int ret;
+
+	mutex_lock(sk->lock);
+	ret = uip_tcp_socket_close_locked(sk, how);
+	mutex_unlock(sk->lock);
+
+	return ret;
 }
 
 static struct uip_tcp_socket *uip_tcp_socket_find(struct uip_tx_arg *arg, u32 sip, u32 dip, u16 sport, u16 dport)
@@ -110,7 +119,7 @@ static void uip_tcp_socket_free(struct uip_tcp_socket *sk)
 	}
 
 	sk->write_done = sk->read_done = 1;
-	uip_tcp_socket_close(sk, SHUT_RDWR);
+	uip_tcp_socket_close_locked(sk, SHUT_RDWR);
 }
 
 static int uip_tcp_payload_send(struct uip_tcp_socket *sk, u8 flag, u16 payload_len)
