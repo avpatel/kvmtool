@@ -207,6 +207,7 @@ ifeq ($(ARCH),riscv)
 	OBJS		+= riscv/pci.o
 	OBJS		+= riscv/plic.o
 	OBJS		+= riscv/aia.o
+	RISCV_XLEN	?= 64
 	ifeq ($(RISCV_XLEN),32)
 		CFLAGS	+= -mabi=ilp32d -march=rv32gc
 		GUEST_INIT_FLAGS += -mabi=ilp32d -march=rv32gc
