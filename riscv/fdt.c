@@ -24,7 +24,7 @@ struct isa_ext_info isa_info_arr[] = {
 	{"f",		KVM_RISCV_ISA_EXT_F,	.single_letter = true, .min_enabled = true},
 	{"d",		KVM_RISCV_ISA_EXT_D,	.single_letter = true, .min_enabled = true},
 	{"c",		KVM_RISCV_ISA_EXT_C,	.single_letter = true, .min_enabled = true},
-	{"v",		KVM_RISCV_ISA_EXT_V,	.single_letter = true},
+	{"v",		KVM_RISCV_ISA_EXT_V,	.single_letter = true, .min_enabled = true},
 	{"h",		KVM_RISCV_ISA_EXT_H,	.single_letter = true},
 	/* multi-letter sorted alphabetically */
 	{"smnpm",	KVM_RISCV_ISA_EXT_SMNPM},
