@@ -59,6 +59,8 @@ const char *kvm_exit_reasons[] = {
 
 static int pause_event;
 static DEFINE_MUTEX(pause_lock);
+static struct kvm_cpu *pause_req_cpu;
+
 extern struct kvm_ext kvm_req_ext[];
 
 static char kvm_dir[PATH_MAX];
@@ -573,9 +575,25 @@ void kvm__reboot(struct kvm *kvm)
 
 void kvm__continue(struct kvm *kvm)
 {
+	/*
+	 * We must ensure that the resume request comes from the same context
+	 * as the one requested the pause, especially if it was issued from a
+	 * vCPU thread.
+	 */
+	if (current_kvm_cpu) {
+		if (pause_req_cpu != current_kvm_cpu ||
+		    !current_kvm_cpu->paused)
+			die("Trying to resume VM from invalid context");
+		current_kvm_cpu->paused = 0;
+	}
 	mutex_unlock(&pause_lock);
 }
 
+/*
+ * Mark all active CPUs as paused, until kvm__continue() is issued.
+ * NOTE: If this is called from a cpu thread, kvm__continue() must
+ * be called from the same thread.
+ */
 void kvm__pause(struct kvm *kvm)
 {
 	int i, paused_vcpus = 0;
@@ -590,10 +608,16 @@ void kvm__pause(struct kvm *kvm)
 	if (pause_event < 0)
 		die("Failed creating pause notification event");
 	for (i = 0; i < kvm->nrcpus; i++) {
-		if (kvm->cpus[i]->is_running && kvm->cpus[i]->paused == 0)
-			pthread_kill(kvm->cpus[i]->thread, SIGKVMPAUSE);
-		else
-			paused_vcpus++;
+		if (kvm->cpus[i]->is_running && kvm->cpus[i]->paused == 0) {
+			if (current_kvm_cpu != kvm->cpus[i]) {
+				pthread_kill(kvm->cpus[i]->thread, SIGKVMPAUSE);
+				continue;
+			} else if (current_kvm_cpu) {
+				current_kvm_cpu->paused = 1;
+				/* fall through to update our count */
+			}
+		}
+		paused_vcpus++;
 	}
 
 	while (paused_vcpus < kvm->nrcpus) {
@@ -604,6 +628,8 @@ void kvm__pause(struct kvm *kvm)
 		paused_vcpus += cur_read;
 	}
 	close(pause_event);
+	/* Remember the context requesting pause */
+	pause_req_cpu = current_kvm_cpu;
 }
 
 void kvm__notify_paused(void)
