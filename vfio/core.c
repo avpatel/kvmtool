@@ -461,7 +461,7 @@ static struct vfio_group *vfio_group_create(struct kvm *kvm, unsigned long id)
 
 	ret = snprintf(group_node, PATH_MAX, VFIO_DEV_DIR "/%lu", id);
 	if (ret < 0 || ret == PATH_MAX)
-		return NULL;
+		goto err_free_group;
 
 	group->fd = open(group_node, O_RDWR);
 	if (group->fd < 0) {
