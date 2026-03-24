@@ -58,6 +58,7 @@ struct isa_ext_info isa_info_arr[] = {
 	{"zfh",		KVM_RISCV_ISA_EXT_ZFH},
 	{"zfhmin",	KVM_RISCV_ISA_EXT_ZFHMIN},
 	{"zicbom",	KVM_RISCV_ISA_EXT_ZICBOM},
+	{"zicbop",	KVM_RISCV_ISA_EXT_ZICBOP},
 	{"zicboz",	KVM_RISCV_ISA_EXT_ZICBOZ},
 	{"ziccrse",	KVM_RISCV_ISA_EXT_ZICCRSE},
 	{"zicntr",	KVM_RISCV_ISA_EXT_ZICNTR},
@@ -195,7 +196,7 @@ static void dump_fdt(const char *dtb_file, void *fdt)
 #define CPU_NAME_MAX_LEN 15
 static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 {
-	unsigned long cbom_blksz = 0, cboz_blksz = 0, satp_mode = 0;
+	unsigned long cbom_blksz = 0, cboz_blksz = 0, cbop_blksz = 0, satp_mode = 0;
 	int i, cpu, pos, arr_sz = ARRAY_SIZE(isa_info_arr);
 
 	_FDT(fdt_begin_node(fdt, "cpus"));
@@ -247,6 +248,13 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 				reg.addr = (unsigned long)&cboz_blksz;
 				if (ioctl(vcpu->vcpu_fd, KVM_GET_ONE_REG, &reg) < 0)
 					die("KVM_GET_ONE_REG failed (config.zicboz_block_size)");
+			}
+
+			if (isa_info_arr[i].ext_id == KVM_RISCV_ISA_EXT_ZICBOP && !cbop_blksz) {
+				reg.id = RISCV_CONFIG_REG(zicbop_block_size);
+				reg.addr = (unsigned long)&cbop_blksz;
+				if (ioctl(vcpu->vcpu_fd, KVM_GET_ONE_REG, &reg) < 0)
+					die("KVM_GET_ONE_REG failed (config.zicbop_block_size)");
 			}
 
 			if ((strlen(isa_info_arr[i].name) + pos + 1) >= CPU_ISA_MAX_LEN) {
@@ -305,6 +313,8 @@ static void generate_cpu_nodes(void *fdt, struct kvm *kvm)
 			_FDT(fdt_property_cell(fdt, "riscv,cbom-block-size", cbom_blksz));
 		if (cboz_blksz)
 			_FDT(fdt_property_cell(fdt, "riscv,cboz-block-size", cboz_blksz));
+		if (cbop_blksz)
+			_FDT(fdt_property_cell(fdt, "riscv,cbop-block-size", cbop_blksz));
 		_FDT(fdt_property_cell(fdt, "reg", cpu));
 		_FDT(fdt_property_string(fdt, "status", "okay"));
 

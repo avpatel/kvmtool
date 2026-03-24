@@ -135,6 +135,9 @@ int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset)
 	OPT_BOOLEAN('\0', "disable-zicboz",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZICBOZ],	\
 		    "Disable Zicboz Extension"),			\
+	OPT_BOOLEAN('\0', "disable-zicbop",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZICBOP],	\
+		    "Disable Zicbop Extension"),			\
 	OPT_BOOLEAN('\0', "disable-ziccrse",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZICCRSE],	\
 		    "Disable Ziccrse Extension"),			\
