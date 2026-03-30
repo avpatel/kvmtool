@@ -40,11 +40,14 @@ done
 unset KVMTOOL_PATH
 
 copy_uapi_asm_header () {
-	local src="$LINUX_ROOT/arch/$arch/include/uapi/asm/$1"
+	local file="arch/$arch/include/uapi/asm/$1"
+	local src="$LINUX_ROOT/$file"
 
 	if [ -r "$src" ]
 	then
 		cp -- "$src" "$KVMTOOL_PATH/include/asm/"
+	else
+		echo "Warning: Unable to find $file, skipping..."
 	fi
 }
 
