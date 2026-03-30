@@ -28,17 +28,19 @@ then
 	exit 1
 fi
 
-cp -- "$LINUX_ROOT/include/uapi/linux/kvm.h" include/linux
+copy_uapi_linux_header () {
+	cp -- "$LINUX_ROOT/include/uapi/linux/$1" include/linux
+}
 
-for header in $VIRTIO_LIST
+for header in kvm.h $VIRTIO_LIST
 do
-	cp -- "$LINUX_ROOT/include/uapi/linux/$header" include/linux
+	copy_uapi_linux_header $header
 done
 
 unset KVMTOOL_PATH
 
-copy_optional_arch () {
-	local src="$LINUX_ROOT/arch/$arch/include/uapi/$1"
+copy_uapi_asm_header () {
+	local src="$LINUX_ROOT/arch/$arch/include/uapi/asm/$1"
 
 	if [ -r "$src" ]
 	then
@@ -51,8 +53,9 @@ do
 	KVMTOOL_PATH=$arch
 
 	case $arch in
-		arm64) copy_optional_arch asm/sve_context.h ;;
+		arm64)
+			copy_uapi_asm_header sve_context.h
+			;;
 	esac
-	cp -- "$LINUX_ROOT/arch/$arch/include/uapi/asm/kvm.h" \
-		"$KVMTOOL_PATH/include/asm"
+	copy_uapi_asm_header kvm.h
 done
