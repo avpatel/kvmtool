@@ -1,6 +1,7 @@
 #include "kvm/kvm.h"
 #include "kvm/kvm-cpu.h"
 #include "kvm/virtio.h"
+#include "asm/smccc.h"
 
 #include <asm/ptrace.h>
 #include <linux/bitops.h>
@@ -227,11 +228,6 @@ void kvm_cpu__delete(struct kvm_cpu *vcpu)
 {
 	kvm_cpu__teardown_pvtime(vcpu->kvm);
 	free(vcpu);
-}
-
-bool kvm_cpu__handle_exit(struct kvm_cpu *vcpu)
-{
-	return false;
 }
 
 void kvm_cpu__show_page_tables(struct kvm_cpu *vcpu)
@@ -468,4 +464,17 @@ void kvm_cpu__show_registers(struct kvm_cpu *vcpu)
 	if (ioctl(vcpu->vcpu_fd, KVM_GET_ONE_REG, &reg) < 0)
 		die("KVM_GET_ONE_REG failed (lr)");
 	dprintf(debug_fd, " LR:    0x%lx\n", data);
+}
+
+bool kvm_cpu__handle_exit(struct kvm_cpu *vcpu)
+{
+	struct kvm_run *run = vcpu->kvm_run;
+
+	switch (run->exit_reason) {
+	case KVM_EXIT_HYPERCALL:
+		handle_hypercall(vcpu);
+		return true;
+	default:
+		return false;
+	}
 }

@@ -181,6 +181,8 @@ ifeq ($(ARCH), arm64)
 	OBJS		+= arm64/arm-cpu.o
 	OBJS		+= arm64/pvtime.o
 	OBJS		+= arm64/pmu.o
+	OBJS		+= arm64/psci.o
+	OBJS		+= arm64/smccc.o
 	ARCH_INCLUDE	:= arm64/include
 
 	ARCH_WANT_LIBFDT := y
