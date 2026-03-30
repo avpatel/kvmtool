@@ -58,6 +58,7 @@ do
 	case $arch in
 		arm64)
 			copy_uapi_asm_header sve_context.h
+			copy_uapi_linux_header psci.h
 			;;
 	esac
 	copy_uapi_asm_header kvm.h
