@@ -123,6 +123,9 @@ int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset)
 	OPT_BOOLEAN('\0', "disable-zfa",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZFA],	\
 		    "Disable Zfa Extension"),				\
+	OPT_BOOLEAN('\0', "disable-zfbfmin",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZFBFMIN],	\
+		    "Disable Zfbfmin Extension"),			\
 	OPT_BOOLEAN('\0', "disable-zfh",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZFH],	\
 		    "Disable Zfh Extension"),				\
@@ -195,6 +198,12 @@ int riscv__cpu_type_parser(const struct option *opt, const char *arg, int unset)
 	OPT_BOOLEAN('\0', "disable-zvbc",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZVBC],	\
 		    "Disable Zvbc Extension"),				\
+	OPT_BOOLEAN('\0', "disable-zvfbfmin",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZVFBFMIN],	\
+		    "Disable Zvfbfmin Extension"),			\
+	OPT_BOOLEAN('\0', "disable-zvfbfwma",				\
+		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZVFBFWMA],	\
+		    "Disable Zvfbfwma Extension"),			\
 	OPT_BOOLEAN('\0', "disable-zvfh",				\
 		    &(cfg)->ext_disabled[KVM_RISCV_ISA_EXT_ZVFH],	\
 		    "Disable Zvfh Extension"),				\
