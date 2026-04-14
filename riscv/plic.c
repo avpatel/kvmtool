@@ -217,7 +217,7 @@ static void plic__irq_trig(struct kvm *kvm, int irq, int level, bool edge)
 		return;
 
 	if (irq <= 0 || s->num_irq <= (u32)irq)
-		goto done;
+		return;
 
 	mutex_lock(&s->irq_lock);
 
@@ -261,7 +261,6 @@ static void plic__irq_trig(struct kvm *kvm, int irq, int level, bool edge)
 			break;
 	}
 
-done:
 	mutex_unlock(&s->irq_lock);
 }
 
